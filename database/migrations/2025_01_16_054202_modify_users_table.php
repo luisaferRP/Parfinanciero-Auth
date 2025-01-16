@@ -56,14 +56,14 @@ return new class extends Migration
         // Delete the 'user_sessions' table
         Schema::dropIfExists('user_sessions');
 
-        // Delete the 'roles' table
-        Schema::dropIfExists('roles');
-
         // Revert the changes in the 'users' table
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign(['role_id']);
             $table->dropColumn('role_id');
             $table->dropColumn('last_name');
         });
+
+        // Delete the 'roles' table
+        Schema::dropIfExists('roles');
     }
 };
