@@ -137,7 +137,9 @@ class UserController extends Controller
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="name", type="string"),
-     *             @OA\Property(property="email", type="string", format="email")
+     *             @OA\Property(property="last_name", type="string"),
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="id_rol", type="integer")
      *         )
      *     ),
      *     @OA\Response(
@@ -161,7 +163,9 @@ class UserController extends Controller
 
         $validatedData = $request->validate([
             'name'  => 'string|max:255',
-            'email' => 'email|unique:users,email,' . $id,
+            'last_name' => 'string|max:255',
+            'email' => 'email|unique:users,email,'. $id,
+            'id_rol' => 'integer|exists:roles,id'
         ]);
 
         $user->update($validatedData);

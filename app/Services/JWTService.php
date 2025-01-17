@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\UserSession;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Carbon\Carbon;
+use Firebase\JWT\JWT;
+
 
 class JWTService
 {
@@ -15,23 +14,16 @@ class JWTService
      * @param string $providerId
      * @return string
      */
-    public static function generateAndStoreToken($user, string $providerId): string
+    public static function generateToken($user): string
     {
-        // Generar el token JWT
-        $token = JWTAuth::fromUser($user);
+        $payload = [
+            'iss' => config('app.url'), // Emisor
+            'sub' => $user->id,         // ID del usuario
+            'iat' => time(),            // Emitido en
+            'exp' => time() + (config('jwt.ttl') * 60), // Expiración
+        ];
 
-        // Calcular la fecha de expiración del token (opcional, ajusta según tu lógica)
-        $expiresAt = Carbon::now()->addHours(2); // Ejemplo: 2 horas de validez
-
-        // Guardar el token en la tabla `user_sessions`
-        UserSession::create([
-            'user_id' => $user->id,
-            'provider_id' => $providerId,
-            'session_token' => $token,
-            'expires_at' => $expiresAt,
-        ]);
-
-        return $token;
+        return JWT::encode($payload, config('jwt.secret'), 'HS256');
     }
 }
 

@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 use App\Models\UserSession;
 use App\Services\JWTService;
 use Carbon\Carbon;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +22,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/v1/login",
+     *     path="/login",
      *     summary="User login and generates a JWT token",
      *     tags={"Authentication"},
      *     @OA\RequestBody(
@@ -49,35 +51,33 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (! Auth::attempt($credentials)) {
+        if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
         $user = Auth::user();
 
-        // Check for existing session and invalidate it
-        $existingSession = UserSession::where('user_id', $user->id)->first();
-        if ($existingSession) {
-            $existingSession->update(['session_token' => null]);
-        }
+        // // Remove any previous session
+        DB::table('user_sessions')->where('user_id', $user->id)->delete();
 
-        // Generate a new JWT
+        // Generate a new JWT token
+        $providerId = 'local';
         $token = JWTService::generateToken($user);
 
-        // Save new session
-        UserSession::updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'provider_id'   => 'local',
-                'session_token' => $token,
-                'expires_at'    => Carbon::now()->addMinutes(config('jwt.ttl')),
-            ]
-        );
+        // Insert the session into the database
+        DB::table('user_sessions')->insert([
+            'user_id' => $user->id,
+            'provider_id' => $providerId,
+            'session_token' => $token,
+            'expires_at' => now()->addMinutes(config('jwt.ttl')),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return response()->json([
             'message' => 'Login successful',
-            'token'   => $token,
-            'user'    => $user,
+            'token' => $token,
+            'user' => new UserResource($user),
         ]);
     }
 
