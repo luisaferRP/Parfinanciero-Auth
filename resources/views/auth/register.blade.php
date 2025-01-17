@@ -15,7 +15,7 @@
             </div>
 
             <div>
-                <x-label for="last_name" value="{{ __('Last_name') }}" />
+                <x-label for="last_name" value="{{ __('Last Name') }}" />
                 <x-input id="las_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')" required autofocus autocomplete="last_name" />
             </div>
 

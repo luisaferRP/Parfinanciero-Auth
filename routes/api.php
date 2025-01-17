@@ -3,14 +3,25 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\AuthController;
 
 Route::prefix('v1')->group(function () {
+    // Routes related to users
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{id}', [UserController::class, 'show']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
     Route::put('/users/{id}', [UserController::class, 'update']);
+
+    // Authentication route
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
+// Protected route for the authenticated user
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+// Generation of Swagger documentation
+Route::get('/api-docs.json', function () {
+    return response()->json(\L5Swagger\Generator::generateDocs());
+});

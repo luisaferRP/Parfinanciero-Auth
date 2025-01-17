@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -9,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
  * @OA\Schema(
@@ -23,7 +23,7 @@ use Laravel\Sanctum\HasApiTokens;
  * )
  */
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, HasProfilePhoto, Notifiable, TwoFactorAuthenticatable;
 
@@ -53,6 +53,17 @@ class User extends Authenticatable
         'two_factor_secret',
     ];
 
+    // Implementation of JWTSubject methods
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
     /**
      * The accessors to append to the model's array form.
      *
@@ -68,8 +79,8 @@ class User extends Authenticatable
      * @return array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'email_verified_at'       => 'datetime',
+        'password'                => 'hashed',
         'two_factor_confirmed_at' => 'datetime',
     ];
 
@@ -82,11 +93,11 @@ class User extends Authenticatable
 
         // Set default values on creating
         static::creating(function ($user) {
-            if (!$user->auth_provider) {
+            if (! $user->auth_provider) {
                 $user->auth_provider = 'local';
             }
 
-            if (!$user->role_id) {
+            if (! $user->role_id) {
                 $user->role_id = 1;
             }
         });
