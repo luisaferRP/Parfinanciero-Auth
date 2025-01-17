@@ -10,6 +10,19 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @OA\Schema(
+ *     description="User model",
+ *     title="User",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="John"),
+ *     @OA\Property(property="last_name", type="string", example="Doe"),
+ *     @OA\Property(property="email", type="string", example="john.doe@example.com"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-01-15T15:52:01+00:00"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-01-15T15:52:01+00:00"),
+ * )
+ */
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, HasProfilePhoto, Notifiable, TwoFactorAuthenticatable;
