@@ -14,13 +14,13 @@
         }
     ],
     "paths": {
-        "/api/v1/login": {
+        "/login": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "User login and generates a JWT token",
-                "operationId": "b9b760991d94b179960cd7ddc93eedf2",
+                "operationId": "67d6d0fdd54fba132e1b6f55ca254183",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -160,9 +160,15 @@
                                     "name": {
                                         "type": "string"
                                     },
+                                    "last_name": {
+                                        "type": "string"
+                                    },
                                     "email": {
                                         "type": "string",
                                         "format": "email"
+                                    },
+                                    "id_rol": {
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"
@@ -213,6 +219,99 @@
                     }
                 }
             }
+        },
+        "/validate-session": {
+            "post": {
+                "tags": [
+                    "Validator"
+                ],
+                "summary": "Validar la sesión de un usuario",
+                "description": "Este endpoint valida que el token de sesión del usuario sea válido y no haya expirado.",
+                "operationId": "validateSession",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "token": {
+                                        "type": "string",
+                                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sesión válida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sesión válida."
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Juan Pérez"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Sesión inválida o expirada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sesión inválida o expirada."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token inválido o corrupto",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El token es inválido o está corrupto."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -260,6 +359,10 @@
         {
             "name": "Users",
             "description": "Users"
+        },
+        {
+            "name": "Validator",
+            "description": "Validator"
         }
     ]
 }

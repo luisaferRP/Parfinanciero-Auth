@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\SessionController;
+
 
 Route::prefix('v1')->group(function () {
     // Routes related to users
@@ -14,6 +16,9 @@ Route::prefix('v1')->group(function () {
 
     // Authentication route
     Route::post('/login', [AuthController::class, 'login']);
+
+    // Session route
+    Route::post('/validate-session', [SessionController::class, 'validateSession']);
 });
 
 // Protected route for the authenticated user
