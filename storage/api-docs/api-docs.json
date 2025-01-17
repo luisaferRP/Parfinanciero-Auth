@@ -14,6 +14,62 @@
         }
     ],
     "paths": {
+        "/api/v1/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User login and generates a JWT token",
+                "operationId": "b9b760991d94b179960cd7ddc93eedf2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "tags": [
@@ -197,6 +253,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
         {
             "name": "Users",
             "description": "Users"
