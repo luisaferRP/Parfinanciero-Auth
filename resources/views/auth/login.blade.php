@@ -55,6 +55,7 @@
          <!-- Google and Microsoft -->
          <div class="mb-6 mt-4">
             <button 
+                id="google-login-button"
                 class="flex items-center justify-center w-full px-4 py-2 mb-3 bg-white text-gray-800 border border-gray-300 rounded-lg shadow hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 transition ease-in-out duration-150">
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvUEPcQkCb9DNjiN5j_uL51VMehMlc6ye5AQ&s" alt="Google" class="w-5 h-5 mr-2">
                 {{ __('Continuar con Google') }}
@@ -77,3 +78,8 @@
         </div>
     </x-authentication-card>
 </x-guest-layout>
+
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
+<script type="module" src="{{ asset('js/firebase-auth.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

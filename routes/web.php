@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleAuthController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -18,3 +19,12 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+
+Route::get('/firebase-test', function () {
+    $firebase = app('firebase');
+    return response()->json([
+        'message' => 'Firebase conectado correctamente'
+    ]);
+});
+
+Route::post('google-login', [GoogleAuthController::class, 'loginWithGoogle'])->name('google.login');
