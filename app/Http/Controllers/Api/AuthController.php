@@ -80,6 +80,7 @@ class AuthController extends Controller
             'user' => new UserResource($user),
         ]);
     }
+    
 
     /**
      * Handle user logout and invalidate session.
@@ -87,6 +88,8 @@ class AuthController extends Controller
      * @param  Request  $request
      * @return JsonResponse
      */
+    
+     
     public function logout(Request $request): JsonResponse
     {
         $user = Auth::user();
