@@ -16,6 +16,8 @@ Route::prefix('v1')->group(function () {
 
     // Authentication route
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/check-user', [AuthController::class, 'checkUser'])->middleware('throttle:10,1');
+    Route::post('/get-bearer-token', [AuthController::class, 'getBearerToken'])->middleware('throttle:10,1');
 
     // Session route
     Route::post('/validate-session', [SessionController::class, 'validateSession']);

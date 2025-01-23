@@ -2,9 +2,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use App\Http\Resources\UserResource;
 
 /**
  * @OA\Info(
@@ -153,7 +153,7 @@ class UserController extends Controller
      *     )
      * )
      */
-/*     public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         $user = User::find($id);
 
@@ -162,14 +162,13 @@ class UserController extends Controller
         }
 
         $validatedData = $request->validate([
-            'name'  => 'string|max:255',
+            'name'      => 'string|max:255',
             'last_name' => 'string|max:255',
-            'email' => 'email|unique:users,email,'. $id,
-            'id_rol' => 'integer|exists:roles,id'
+            'email'     => 'email|unique:users,email,' . $id,
+            'id_rol'    => 'integer|exists:roles,id',
         ]);
 
         $user->update($validatedData);
         return response()->json(new UserResource($user));
-    } */
+    }
 }
-
