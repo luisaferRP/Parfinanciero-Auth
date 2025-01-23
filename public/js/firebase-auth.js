@@ -137,13 +137,13 @@ export function loginWithMicrosoft() {
                     window.location.href = `/dashboard?jwt=${Jwt.jwt}`;
                 } else {
                     console.log("Usuario no registrado, registrando...");
-                    const registerResponse = await axios.post("/register", {
+                    const registerResponse = await axios.post("/api/register", {
                         name: firstName,
                         last_name: lastName || "Predeterminado",
                         email: user.email,
                         password: user.uid,
-                        password_confirmation: user.uid,
-                        terms: true,
+                        current_team_id:user.providerData && user.providerData.length > 0 ? user.providerData[0].providerId : null,
+                        profile_photo_path:user.PhotoURL,
                     });
 
                     console.log("Usuario registrado:", registerResponse.data);
@@ -160,9 +160,11 @@ export function loginWithMicrosoft() {
             }
         })
         .catch(function (error) {
-            console.error("Error al autenticar con Google", error);
+            console.error("Error al autenticar con Microsoft", error);
+            console.error("Error al autenticar con Microsoft", error);
         });
 }
+
 
 
 
