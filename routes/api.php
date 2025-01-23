@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\Auth\MicrosoftAuthController;
 
 
 Route::prefix('v1')->group(function () {
@@ -30,3 +31,5 @@ Route::get('/user', function (Request $request) {
 Route::get('/api-docs.json', function () {
     return response()->json(\L5Swagger\Generator::generateDocs());
 });
+
+Route::post('microsoft-login', [MicrosoftAuthController::class, 'authenticateWithMicrosoft']);

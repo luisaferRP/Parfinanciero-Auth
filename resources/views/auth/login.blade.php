@@ -62,6 +62,7 @@
             </button>
 
             <button
+                id="microsoft-login-button"
                 class="flex items-center justify-center w-full px-4 py-2 bg-white text-gray-800 border border-gray-300 rounded-lg shadow hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 transition ease-in-out duration-150">
                 <img src="https://foroalfa.org/imagenes/ilustraciones/1296.jpg" alt="Microsoft" class="w-5 h-5 mr-2">  <!-- Imagen de Microsoft -->
                 {{ __('Continuar con Microsoft') }}
@@ -79,7 +80,20 @@
     </x-authentication-card>
 </x-guest-layout>
 
-<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+<!-- <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
 <script type="module" src="{{ asset('js/firebase-auth.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
+
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
+<script type="module" src="{{ asset('js/firebase-auth.js') }}"></script>
+
+
+
+
+
+
+
+
