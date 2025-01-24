@@ -15,8 +15,6 @@ class RegisterAuthController extends Controller
 
     public function create(Request $request)
     {
-            // Log para ver los datos recibidos
-        Log::info('Datos de entrada al registro:', $request->all());
 
         // Valida los datos del request
         Validator::make($request->all(), [

@@ -55,17 +55,6 @@ import axios from 'https://cdn.skypack.dev/axios';
 //     }
 // });
 
-//acaaaaaaaaaaaaaa
-// const firebaseConfig = {
-//     apiKey: "AIzaSyDldaPf5gc10ZHH1z9ymjCuMq2lKHcbqgg",
-//     authDomain: "parfinancieroauth-76f9d.firebaseapp.com",
-//     projectId: "parfinancieroauth-76f9d",
-//     storageBucket: "parfinancieroauth-76f9d.firebasestorage.app",
-//     messagingSenderId: "629167238351",
-//     appId: "1:629167238351:web:7f41c8cbb3b972fc151bba",
-//     measurementId: "G-ZTR3Q63V17"
-//   };
-
 //MICROSOFT ------------------
 
 // Configuración del botón de inicio de sesión con Microsoft
@@ -105,7 +94,7 @@ export async function getBearerToken(email) {
     }
 }
 
-//existencia del usuario
+//validation of the existence of us
 export async function checkIfUserExists(email) {
     try {
         const response = await axios.post("/api/v1/check-user", {
@@ -118,7 +107,7 @@ export async function checkIfUserExists(email) {
     }
 }
 
-//login de usuario
+//user login
 export async function loginUser(user) {
     try {
         const loginResponse = await axios.post("/login", {
@@ -179,7 +168,6 @@ export function loginWithMicrosoft() {
             }
         })
         .catch(function (error) {
-            console.error("Error al autenticar con Microsoft", error);
             console.error("Error al autenticar con Microsoft", error);
         });
 }
