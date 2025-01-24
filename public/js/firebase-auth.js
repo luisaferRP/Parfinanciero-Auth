@@ -3,60 +3,6 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.17.1/firebas
 import { getAuth, GoogleAuthProvider, signInWithPopup, OAuthProvider  } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js';
 import axios from 'https://cdn.skypack.dev/axios';
 
-
-// Tu configuración de Firebase
-// const firebaseConfig = {
-//     apiKey: 'AIzaSyD4wsjXjw8UsofiX1lt_wJoZ2jH5DCYalc',
-//     authDomain: 'prueba-a3263.firebaseapp.com',
-//     projectId: 'prueba-a3263',
-//     storageBucket: 'prueba-a3263.firebasestorage.app',
-//     messagingSenderId: '785781536496',
-//     appId: '1:785781536496:web:235df38014db8d626b3435'
-// };
-
-// // Inicializar Firebase
-// const app = initializeApp(firebaseConfig);
-// const auth = getAuth(app);
-
-// // Configurar el proveedor de Google
-// const provider = new GoogleAuthProvider();
-
-// // Función para iniciar sesión con Google
-// export function loginWithGoogle() {
-//     signInWithPopup(auth, provider)
-//         .then(function (result) {
-//             const user = result.user;
-//             console.log('Usuario autenticado:', user);
-//             console.log("datos", user.displayName)
-//             axios.post('/register', {
-//                 name: user.displayName,
-//                 last_name: 'Predeterminado',
-//                 email: user.email,
-//                 password: user.uid, // Puedes usar el UID como una contraseña temporal
-//                 password_confirmation: user.uid, // Confirmación para cumplir con la validación
-//                 terms: true 
-//             })
-//             .then(response => {
-//                 console.log('Usuario registrado con Google:', response.data);
-//                 window.location.href = '/dashboard'; // Redirige al dashboard después del registro
-//             })
-//             // Puedes enviar la información del usuario al servidor si es necesario
-//         })
-//         .catch(function (error) {
-//             console.error('Error al autenticar con Google', error);
-//         });
-// }
-
-// // Asociar el evento del clic a la función loginWithGoogle
-// document.addEventListener('DOMContentLoaded', () => {
-//     const googleButton = document.getElementById('google-login-button');
-//     if (googleButton) {
-//         googleButton.addEventListener('click', loginWithGoogle);
-//     }
-// });
-
-//MICROSOFT ------------------
-
 // Configuración del botón de inicio de sesión con Microsoft
 document.addEventListener('DOMContentLoaded', () => {
     const microsoftButton = document.getElementById('microsoft-login-button');
@@ -66,7 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Asociar el evento del clic a la función loginWithGoogle
+document.addEventListener('DOMContentLoaded', () => {
+    const googleButton = document.getElementById('google-login-button');
+    if (googleButton) {
+        googleButton.addEventListener('click', loginWithGoogle);
+    }
+});
 
+
+// Tu configuración de Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyDldaPf5gc10ZHH1z9ymjCuMq2lKHcbqgg",
     authDomain: "parfinancieroauth-76f9d.firebaseapp.com",
@@ -76,12 +31,43 @@ const firebaseConfig = {
     appId: "1:629167238351:web:7f41c8cbb3b972fc151bba",
     measurementId: "G-ZTR3Q63V17"
   };
-  
-// Inicializa Firebase solo una vez
+
+// // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-const provider = new OAuthProvider('microsoft.com');
+
+// Función para iniciar sesión con Google
+export function loginWithGoogle() {
+
+    // Configurar el proveedor de Google
+    const provider = new GoogleAuthProvider();
+
+    signInWithPopup(auth, provider)
+        .then(function (result) {
+            const user = result.user;
+            console.log('Usuario autenticado:', user);
+            console.log("datos", user.displayName)
+            axios.post('/register', {
+                name: user.displayName,
+                last_name: 'Predeterminado',
+                email: user.email,
+                password: user.uid, // Puedes usar el UID como una contraseña temporal
+                password_confirmation: user.uid, // Confirmación para cumplir con la validación
+                terms: true
+            })
+            .then(response => {
+                console.log('Usuario registrado con Google:', response.data);
+                window.location.href = '/dashboard'; // Redirige al dashboard después del registro
+            })
+            // Puedes enviar la información del usuario al servidor si es necesario
+        })
+        .catch(function (error) {
+            console.error('Error al autenticar con Google', error);
+        });
+}
+
+//MICROSOFT ------------------
 
 export async function getBearerToken(email) {
     try {
@@ -131,6 +117,9 @@ export async function loginUser(user) {
 
 // Function to log in with Microsoft
 export function loginWithMicrosoft() {
+
+    const provider = new OAuthProvider('microsoft.com');
+
     signInWithPopup(auth, provider)
         .then(async function (result) {
             const user = result.user;
@@ -147,7 +136,7 @@ export function loginWithMicrosoft() {
 
                     console.log("Usuario ya registrado, iniciando sesión...");
                     await loginUser(user);
-                
+
                 } else {
                     console.log("Usuario no registrado, registrando...");
                     const registerResponse = await axios.post("/api/register", {
