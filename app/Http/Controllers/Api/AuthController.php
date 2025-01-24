@@ -191,7 +191,7 @@ class AuthController extends Controller
         DB::table('user_sessions')->where('user_id', $user->id)->delete();
 
         // Generate a new JWT token
-        $providerId = 'local';
+        $providerId = $request->input('providerId') ! null ? $request->input('providerId') : 'local';
         $token      = JWTService::generateToken($user);
 
         // Insert the session into the database

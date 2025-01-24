@@ -105,7 +105,42 @@ export async function getBearerToken(email) {
     }
 }
 
-// Function to log in with Google
+//existencia del usuario
+export async function checkIfUserExists(email) {
+    try {
+        const response = await axios.post("/api/v1/check-user", {
+            email,
+        });
+        return response.data.exists;
+    } catch (error) {
+        console.error("Error al verificar el usuario:", error);
+        return false;
+    }
+}
+
+//login de usuario
+export async function loginUser(user) {
+    try {
+        const loginResponse = await axios.post("/login", {
+            email : user.email,
+            password : user.uid,
+            providerId : user.providerData[0].providerId
+        });
+        console.log("Sesión iniciada:", loginResponse.data);
+
+        // Wait to get the JWT
+        const Jwt = await getBearerToken(user.email);
+        localStorage.setItem("jwt", Jwt);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        // Redirect to dashboard with JWT in URL
+        window.location.href = `/dashboard?jwt=${Jwt.jwt}`;
+    } catch (error) {
+        console.error("Error al iniciar sesión:", error);
+    }
+}
+
+// Function to log in with Microsoft
 export function loginWithMicrosoft() {
     signInWithPopup(auth, provider)
         .then(async function (result) {
@@ -117,24 +152,13 @@ export function loginWithMicrosoft() {
             const lastName = lastNameParts.join(" ");
 
             try {
-                const checkResponse = await axios.post("/api/v1/check-user", {
-                    email: user.email,
-                });
+                const userExist = await checkIfUserExists(user.email);
 
-                if (checkResponse.data.exists) {
+                if (userExist) {
+
                     console.log("Usuario ya registrado, iniciando sesión...");
-                    const loginResponse = await axios.post("/login", {
-                        email: user.email,
-                        password: user.uid,
-                    });
-
-                    console.log("Sesión iniciada:", loginResponse.data);
-
-                    // Wait to get the JWT
-                    const Jwt = await getBearerToken(user.email);
-
-                    // Redirect to dashboard with JWT in URL
-                    window.location.href = `/dashboard?jwt=${Jwt.jwt}`;
+                    await loginUser(user);
+                
                 } else {
                     console.log("Usuario no registrado, registrando...");
                     const registerResponse = await axios.post("/api/register", {
@@ -144,16 +168,11 @@ export function loginWithMicrosoft() {
                         password: user.uid,
                         current_team_id:user.providerData && user.providerData.length > 0 ? user.providerData[0].providerId : null,
                         profile_photo_path:user.PhotoURL,
+                        auth_provider : user.providerData[0].providerId
                     });
 
                     console.log("Usuario registrado:", registerResponse.data);
-
-                    // Wait to get the JWT
-                    const Jwt = await getBearerToken(user.email);
-                    console.log("JWT obtenido:", Jwt);
-
-                    // Redirect to dashboard with JWT in URL
-                    window.location.href = `/dashboard?jwt=${Jwt.jwt}`;
+                    await loginUser(user);
                 }
             } catch (error) {
                 console.error("Error en el proceso de autenticación:", error);
@@ -164,77 +183,3 @@ export function loginWithMicrosoft() {
             console.error("Error al autenticar con Microsoft", error);
         });
 }
-
-
-
-
-// export function loginWithMicrosoft() {
-//     signInWithPopup(auth, provider)
-//         .then((result) => {
-//             // Obtener el token de Microsoft
-//             const user = result.user;
-//             user.getIdToken().then((idToken) => {
-//                 console.log('Token de ID:', idToken);
-
-//                 //objeto de usuario
-//                 const userData = {
-//                     idToken: idToken,
-//                     name: user.displayName,
-//                     last_name: 'Predeterminado',
-//                     email: user.email,
-//                     password: user.uid, 
-//                     current_team_id : user.providerData[0].providerId,
-//                     profile_photo_path : user.providerData[0].photoURL,
-//                 };
-//                 //eviamos el objeto a el backend
-//                 fetch('/api/microsoft-login',{
-//                     method: 'POST',
-//                     headers: {
-//                         'Content-Type': 'application/json',
-//                         'Accept': 'application/json,'
-//                     },
-//                     body: JSON.stringify({idToken: user.idToken}),
-//                 })
-//                 .then((response) => {
-//                     if (!response.ok) {
-//                         throw new Error('Error en la solicitud');
-//                     }
-//                     return response.json();
-//                 })
-//                 .then((data)=>{
-//                     console.log('Respuesta:',data);
-//                 })
-//                 .catch((error) => {
-//                     console.error('Error en la solicitud:', error);
-//                 });
-
-
-//             });
-//             //en user tengo todos los dats de el usuario en providerData estan los datos 
-//             console.log('Usuario autenticado:', user);
-//             console.log('Datos del usuario:', user.displayName);
-
-//             // axios.post('/register', {
-//             //     name: user.displayName,
-//             //     last_name: 'Predeterminado',
-//             //     email: user.email,
-//             //     password: user.uid, // Puedes usar el UID como una contraseña temporal
-//             //     password_confirmation: user.uid, // Confirmación para cumplir con la validación
-//             //     terms: true ,
-//             //     current_team_id : 'Microsoft'
-                
-//             // })
-//             // .then(response => {
-//             //     console.log('Usuario autenticado con Microsoft:', response.data);
-//             //     window.location.href = '/dashboard'; // Redirige al dashboard después del registro
-//             // })
-
-//             // .catch((error) => {
-//             //     console.error('Error al registrar usuario:', error);
-//             // });
-
-//         })
-//         .catch((error) => {
-//             console.error('Error al autenticar con Microsoft:', error);
-//         });
-// }

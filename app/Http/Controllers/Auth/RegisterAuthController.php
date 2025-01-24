@@ -34,7 +34,8 @@ class RegisterAuthController extends Controller
             'password' => Hash::make($request->input('password')),
             'current_team_id' => $request->input['current_team_id'] ?? null,
             'profile_photo_path' => $request->input['profile_photo_path'] ?? '',
-            'role_id' => 1,
+            'auth_provider' => $request->input('auth_provider'),
+            'role_id' => '2',
         ]);
     
         return response()->json(['message' => 'Usuario registrado con éxito!', 'user' => $user]);
