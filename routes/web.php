@@ -31,3 +31,4 @@ Route::get('/firebase-test', function () {
 });
 
 Route::post('google-login', [GoogleAuthController::class, 'loginWithGoogle'])->name('google.login');
+
