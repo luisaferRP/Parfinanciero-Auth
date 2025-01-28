@@ -8,7 +8,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
 import axios from "https://cdn.skypack.dev/axios";
 
-// Configuración del botón de inicio de sesión con Microsoft
+//buttons to start section
+//microsoft
 document.addEventListener("DOMContentLoaded", () => {
     const microsoftButton = document.getElementById("microsoft-login-button");
     if (microsoftButton) {
@@ -17,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Asociar el evento del clic a la función loginWithGoogle
+//Google
 document.addEventListener("DOMContentLoaded", () => {
     const googleButton = document.getElementById("google-login-button");
     if (googleButton) {
@@ -25,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Tu configuración de Firebase
+//Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDldaPf5gc10ZHH1z9ymjCuMq2lKHcbqgg",
     authDomain: "parfinancieroauth-76f9d.firebaseapp.com",
@@ -36,7 +37,7 @@ const firebaseConfig = {
     measurementId: "G-ZTR3Q63V17",
 };
 
-// // Inicializar Firebase
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
@@ -104,22 +105,21 @@ export function loginWithGoogle() {
         });
 }
 
-//MICROSOFT ------------------
+//microsoft authentication ------------------
 
 export async function getBearerToken(email) {
     try {
         const response = await axios.post("/api/v1/get-bearer-token", {
             email,
         });
-        console.log(response.data);
-        return response.data; // Make sure `jwt` is the correct field name in the response
+        return response.data; //we return the token response
     } catch (error) {
         console.error("Error al verificar el usuario:", error);
-        throw error; // Throws the error so it can be handled later
+        throw error;
     }
 }
 
-//validation of the existence of us
+//we validate the existence of the user
 export async function checkIfUserExists(email) {
     try {
         const response = await axios.post("/api/v1/check-user", {
@@ -132,7 +132,7 @@ export async function checkIfUserExists(email) {
     }
 }
 
-//user login
+//we do the login for the user
 export async function loginUser(user) {
     try {
         const loginResponse = await axios.post("/login", {
@@ -140,12 +140,8 @@ export async function loginUser(user) {
             password: user.uid,
             providerId: user.providerData[0].providerId,
         });
-        console.log("Sesión iniciada:", loginResponse.data);
-
-        // Wait to get the JWT
+        // we wait and generate the jwt
         const Jwt = await getBearerToken(user.email);
-        localStorage.setItem("jwt", Jwt);
-        localStorage.setItem("user", JSON.stringify(user));
 
         // Redirect to dashboard with JWT in URL
         window.location.href = `/dashboard?jwt=${Jwt.jwt}`;
@@ -168,13 +164,15 @@ export function loginWithMicrosoft() {
             const lastName = lastNameParts.join(" ");
 
             try {
+                //validate user exit
                 const userExist = await checkIfUserExists(user.email);
-
+                //if the user exists we log in
                 if (userExist) {
                     console.log("Usuario ya registrado, iniciando sesión...");
                     await loginUser(user);
                 } else {
                     console.log("Usuario no registrado, registrando...");
+                    //register user,send data
                     const registerResponse = await axios.post("/api/register", {
                         name: firstName,
                         last_name: lastName || "Predeterminado",

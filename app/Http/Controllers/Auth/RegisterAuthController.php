@@ -16,7 +16,7 @@ class RegisterAuthController extends Controller
     public function create(Request $request)
     {
 
-        // Valida los datos del request
+        //Validates the request data
         Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'last_name' => ['nullable', 'string', 'max:255'],
@@ -24,7 +24,7 @@ class RegisterAuthController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
 
         ])->validate();
-    
+        //create user 
         $user = User::create([
             'name' => $request->input('name'),
             'last_name' => $request->input('last_name'),
